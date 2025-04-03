@@ -12,8 +12,6 @@ include_directories(BEFORE "include")
 add_compile_definitions("HAVE_CONFIG_H")
 add_compile_definitions("LSB_FIRST")
 add_compile_definitions("MDFN_PSS_STYLE")
-add_compile_definitions("MDFN_ENABLE_DEV_BUILD")
-add_compile_definitions("WANT_DEBUGGER")
 add_compile_definitions(PACKAGE="mednafen")
 add_compile_definitions(LOCALEDIR="/usr/local/share/locale/")
 add_compile_definitions(MEDNAFEN_VERSION="1.32.1")
@@ -210,6 +208,56 @@ set(DRIVERS
     src/drivers/Joystick_Linux.cpp
 )
 
+#================ 
+
+set(DRIVERS_UI 
+    src/drivers_imgui/main.cpp
+    src/drivers_imgui/args.cpp
+    src/drivers_imgui/help.cpp
+    src/drivers_imgui/ers.cpp
+    src/drivers_imgui/sound.cpp
+    src/drivers_imgui/netplay.cpp
+    src/drivers_imgui/input.cpp
+    src/drivers_imgui/mouse.cpp
+    src/drivers_imgui/keyboard.cpp
+    src/drivers_imgui/Joystick.cpp
+    src/drivers_imgui/Joystick_SDL.cpp
+    src/drivers_imgui/TextEntry.cpp
+    src/drivers_imgui/console.cpp
+    src/drivers_imgui/cheat.cpp
+    src/drivers_imgui/fps.cpp
+    src/drivers_imgui/video-state.cpp
+    src/drivers_imgui/remote.cpp
+    src/drivers_imgui/rmdui.cpp
+    src/drivers_imgui/opengl.cpp
+    src/drivers_imgui/shader.cpp
+    src/drivers_imgui/nongl.cpp
+    src/drivers_imgui/nnx.cpp
+    src/drivers_imgui/video.cpp
+    src/drivers_imgui/debugger.cpp
+    src/drivers_imgui/gfxdebugger.cpp
+    src/drivers_imgui/memdebugger.cpp
+    src/drivers_imgui/logdebugger.cpp
+    src/drivers_imgui/prompt.cpp
+    # linux
+    src/drivers_imgui/Joystick_Linux.cpp
+    # wip
+    src/drivers_imgui/med_imgui.cpp
+)
+set(DRIVERS ${DRIVERS_UI}
+    src/drivers_imgui/imgui/backends/imgui_impl_opengl2.cpp
+    src/drivers_imgui/imgui/backends/imgui_impl_sdl2.cpp
+    src/drivers_imgui/imgui/imgui.cpp
+    src/drivers_imgui/imgui/imgui_draw.cpp
+    src/drivers_imgui/imgui/imgui_tables.cpp
+    src/drivers_imgui/imgui/imgui_widgets.cpp
+    src/drivers_imgui/imgui/imgui_demo.cpp 
+    # sat    
+   src/ss/debugui.cpp 
+)
+include_directories(BEFORE "src/drivers_imgui/imgui" "src/drivers_imgui/imgui/backends")
+# ================
+
 set(SATURN 
     src/ss/db.cpp
     src/ss/stvio.cpp
@@ -263,13 +311,13 @@ pkg_search_module(SDL2 REQUIRED sdl2)
 include_directories(${SDL2_INCLUDE_DIRS})
 pkg_search_module(FLAC REQUIRED flac)
 pkg_search_module(ALSA REQUIRED alsa)
-
+find_package(OpenGL REQUIRED)
 find_package(ZLIB REQUIRED)
 
 
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS} ${DRIVERS} ${SYSTEMS})
-target_link_libraries(${CMAKE_PROJECT_NAME} ${SDL2_LIBRARIES} ${FLAC_LIBRARIES} ${ZLIB_LIBRARIES} ${ALSA_LIBRARIES})
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fsigned-char -fwrapv -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -Os -fvisibility=hidden )
+target_link_libraries(${CMAKE_PROJECT_NAME} ${SDL2_LIBRARIES} ${OPENGL_LIBRARY} ${FLAC_LIBRARIES} ${ZLIB_LIBRARIES} ${ALSA_LIBRARIES})
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fsigned-char -fwrapv     -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations  -Os -fvisibility=hidden )
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE )
 
 

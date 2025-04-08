@@ -63,3 +63,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 
+
+build/
+buildw32/
+*~
+imgui.ini
